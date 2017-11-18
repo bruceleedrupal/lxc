@@ -1,0 +1,52 @@
+	<?php
+	
+	// drupal_add_css(drupal_get_path('module', 'zoomla') . '/css/global.css');
+	function zoomla_form_alter(&$form, &$form_state, $form_id) {
+	}
+	function zoomla_node_presave($node) {
+		if ($node->type == 'product') {
+			
+			$pihao = $node->field_phtext ['und'] [0] ['value'];
+			
+			$query = new EntityFieldQuery ();
+			
+			$query->entityCondition ( 'entity_type', 'node' )->entityCondition ( 'bundle', 'product' )->propertyCondition ( 'status', 1 )->fieldCondition ( 'field_phtext', 'value', $pihao, '=' );
+			
+			$result = $query->execute ();
+			
+			if ($result) {
+				$num = count ( $result ['node'] );
+				if ($node->nid && $num > 1) {
+					drupal_set_message ( '当前批号' . $pihao . '共有' . $num . '个产品' );
+				} else if (! $node->nid && $num > 0) {
+					drupal_set_message ( '当前批号' . $pihao . "共有" . ($num + 1) . '个产品' );
+				}
+			}
+		}
+	}
+	
+	
+	function zoomla_menu(){
+		$items['check']=array(
+				'page callback' => 'zoomla_check',
+				'access callback' => TRUE,
+				'type' => MENU_CALLBACK
+		);
+		return $items;
+	}
+	
+	function zoomla_check(){
+		$views=views_get_view("products");
+		//$views->set_arguments(array(3));
+		$views->set_display('page');
+		$views->set_items_per_page(0);
+		$views->execute();
+		$results=$views->result;
+//		echo count($results);
+	
+			
+		return;
+	}
+	
+	
+	
