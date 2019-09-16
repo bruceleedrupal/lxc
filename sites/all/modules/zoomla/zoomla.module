@@ -3,8 +3,16 @@
 	// drupal_add_css(drupal_get_path('module', 'zoomla') . '/css/global.css');
 	function zoomla_form_alter(&$form, &$form_state, $form_id) {
 	}
+
+
+        function zoomla_form_product_node_form_alter(&$form, &$form_state, $form_id){
+               $form['field_cksj']['#access']=false;
+        }
+
+
 	function zoomla_node_presave($node) {
 		if ($node->type == 'product') {
+                        zoomla_update_cksj($node);
 			
 			$pihao = $node->field_phtext ['und'] [0] ['value'];
 			
@@ -24,6 +32,21 @@
 			}
 		}
 	}
+
+
+
+        function zoomla_update_cksj(&$node){
+            $original=$node->original;
+            if($original->field_status['und'][0]['value']==1 && in_array($node->field_status['und'][0]['value'],[3,4,6])) {
+               $field_syrq = &$node->field_syrq; 
+               $field_syrq['und'][0]['value']=date('Y-m-d H:i:s');
+               $field_syrq['und'][0]['timezone']="Asia/Shanghai";
+               $field_syrq['und'][0]['timezone_db']="Asia/Shanghai";
+               $field_syrq['und'][0]['date_type']="datetime";
+            }
+        }
+
+
 	
 	
 	function zoomla_menu(){
@@ -47,6 +70,47 @@
 			
 		return;
 	}
-	
-	
+
+/*
+      function zoomla_node_load($nodes,$types){
+	foreach($nodes as $node) {
+               if($node->type='product') {
+                   $yxq =  new DateTime($node->field_yxq['und'][0]['value']);
+                   $status=$node->field_status['und'][0]['value']; 
+                   if($status==1 && $yxq > new DateTime())
+                       $node->title = '(过期)'.$node->title;
+
+         }
+        }
+    }
+*/
+       function zoomla_node_view_alter(&$build) {
+           $node = $build['#node'];
+           if(zoomla_node_guoqi($node))
+                $build['title'][0]['#markup']="<h2>".'(过期)'.$build['title']["#object"]->title.'</h2>';
+
+        }
+        
+
+       function zoomla_node_guoqi($node){
+          $yxq =  new DateTime($node->field_yxq['und'][0]['value']);
+           $status=$node->field_status['und'][0]['value'];
+           if($status==1 && $yxq < new DateTime())
+                return true;
+           else 
+                 return false;
+ 
+       }
+
+
+
+
+     function zoomla_node_access($node, $op, $account) {
+         if($op=='update' && $node->type=='product') {
+             if(zoomla_node_guoqi($node))
+                 return NODE_ACCESS_DENY;
+         }
+            
+         return NODE_ACCESS_IGNORE;
+}
 	
