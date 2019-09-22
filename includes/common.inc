@@ -391,7 +391,7 @@ function drupal_add_feed($url = NULL, $title = '') {
  */
 function drupal_get_feeds($delimiter = "\n") {
   $feeds = drupal_add_feed();
-  return @implode($feeds, $delimiter);
+  return implode($feeds, $delimiter);
 }
 
 /**
@@ -1094,6 +1094,11 @@ function drupal_http_request($url, array $options = array()) {
       elseif ($options['max_redirects']) {
         // Redirect to the new location.
         $options['max_redirects']--;
+
+        // We need to unset the 'Host' header
+        // as we are redirecting to a new location.
+        unset($options['headers']['Host']);
+
         $result = drupal_http_request($location, $options);
         $result->redirect_code = $code;
       }
@@ -6601,7 +6606,7 @@ function element_children(&$elements, $sort = FALSE) {
   $children = array();
   $sortable = FALSE;
   foreach ($elements as $key => $value) {
-    if ($key === '' || @$key[0] !== '#') {
+    if ($key === '' || $key[0] !== '#') {
       $children[$key] = $value;
       if (is_array($value) && isset($value['#weight'])) {
         $sortable = TRUE;

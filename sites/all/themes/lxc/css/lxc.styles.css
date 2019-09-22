@@ -20,7 +20,8 @@ img, media {
 
 /* line 28, ../sass/components/_products.scss */
 .l-page {
-  width: 1200px;
+  width: 1400px;
+  padding:0 15px;
   margin: 0 auto; }
 
 /* line 33, ../sass/components/_products.scss */

@@ -1,0 +1,31 @@
+
+
+#views-exposed-form-products-page {
+	.form-type-date-popup {
+		label {
+			display:none;
+		}
+		.description {
+			color:gray;
+		}
+	}
+	
+	
+	input.form-text {
+		width:7em!important;
+	}
+	
+	
+	
+	select {
+		padding:3px;
+		background-color:white;
+		max-width:8em;
+	}
+
+}
+
+
+.views-exposed-form .views-exposed-widget {
+	padding: 0.5em 0.5em 0 0;
+}

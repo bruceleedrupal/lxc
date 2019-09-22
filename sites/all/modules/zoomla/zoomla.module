@@ -12,7 +12,7 @@
 
 	function zoomla_node_presave($node) {
 		if ($node->type == 'product') {
-                        zoomla_update_cksj($node);
+                        @zoomla_update_cksj($node);
 			
 			$pihao = $node->field_phtext ['und'] [0] ['value'];
 			
@@ -38,11 +38,11 @@
         function zoomla_update_cksj(&$node){
             $original=$node->original;
             if($original->field_status['und'][0]['value']==1 && in_array($node->field_status['und'][0]['value'],[3,4,6])) {
-               $field_syrq = &$node->field_syrq; 
-               $field_syrq['und'][0]['value']=date('Y-m-d H:i:s');
-               $field_syrq['und'][0]['timezone']="Asia/Shanghai";
-               $field_syrq['und'][0]['timezone_db']="Asia/Shanghai";
-               $field_syrq['und'][0]['date_type']="datetime";
+               $field_cksj = &$node->field_cksj; 
+               $field_cksj['und'][0]['value']=date('Y-m-d');
+               $field_cksj['und'][0]['timezone']="Asia/Shanghai";
+               $field_cksj['und'][0]['timezone_db']="Asia/Shanghai";
+               $field_cksj['und'][0]['date_type']="datetime";
             }
         }
 
