@@ -94,7 +94,7 @@
 
        function zoomla_node_guoqi($node){
           $yxq =  new DateTime($node->field_yxq['und'][0]['value']);
-           $status=$node->field_status['und'][0]['value'];
+           $status=@$node->field_status['und'][0]['value'];
            if($status==1 && $yxq < new DateTime())
                 return true;
            else 
